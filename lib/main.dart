@@ -9,6 +9,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   @override
+
   Widget build(BuildContext context) {
     /// Builds the MaterialApp widget for the TravelEase application.
     /// This method sets up the application's main interface, including its

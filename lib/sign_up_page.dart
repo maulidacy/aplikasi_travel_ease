@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
-import 'sign_up_page.dart';
 import 'home_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:developer' as developer;
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-class LoginPage extends StatefulWidget {
+class SignUpPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final _storage = FlutterSecureStorage();
   final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   String hashPassword(String password) {
     var bytes = utf8.encode(password);
@@ -28,27 +23,23 @@ class _LoginPageState extends State<LoginPage> {
     return digest.toString();
   }
 
-  Future<void> _login() async {
-    String? storedUsername = await _storage.read(key: 'username');
-    String? storedPassword = await _storage.read(key: 'password');
+  Future<void> _signUp() async {
+    // Simpan data pengguna
+    String hashedPassword = hashPassword(_passwordController.text);
+    await _storage.write(key: 'username', value: _usernameController.text);
+    await _storage.write(key: 'password', value: hashedPassword);
+    developer.log('User registered: ${_usernameController.text}');
 
-    String hashedInputPassword = hashPassword(_passwordController.text);
+    // Tampilkan pesan berhasil
+    _showDialog('Pendaftaran Berhasil', 'Akun Anda telah berhasil dibuat.');
 
-    if (_usernameController.text == storedUsername &&
-        hashedInputPassword == storedPassword) {
-      // Login berhasil
-      developer.log('Login berhasil');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ), // Navigasi ke HomePage
-      );
-    } else {
-      // Login gagal
-      developer.log('Login gagal');
-      _showDialog('Login Gagal', 'Username atau password salah.');
-    }
+    // Navigasi ke halaman home setelah registrasi
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(),
+      ), // Navigasi ke HomePage
+    );
   }
 
   // Fungsi untuk menampilkan dialog
@@ -74,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    developer.log('LoginPage: Building the login page');
+    developer.log('SignUpPage: Building the sign-up page');
 
     return Scaffold(
       backgroundColor: Color(0xFFE5E5E5),
@@ -85,7 +76,6 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Logo
               Container(
                 alignment: Alignment.center,
                 child: Column(
@@ -103,9 +93,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 40),
-              // Welcome Message
               Text(
-                'Welcome Back!',
+                'Welcome!',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
@@ -118,6 +107,12 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 40),
               _buildTextField(
                 controller: _usernameController,
+                label: 'Username',
+                prefixIcon: Icons.person,
+              ),
+              SizedBox(height: 16),
+              _buildTextField(
+                controller: _emailController,
                 label: 'Email or phone number',
                 prefixIcon: Icons.email,
               ),
@@ -128,36 +123,20 @@ class _LoginPageState extends State<LoginPage> {
                 prefixIcon: Icons.lock,
                 isPassword: true,
               ),
-              SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    // Handle forgot password logic
-                  },
-                  child: Text(
-                    'Forgot password?',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ),
-              ),
               SizedBox(height: 24),
               ElevatedButton(
-                onPressed: _login, // Panggil fungsi login
-                child: Text('Log In'),
+                onPressed: _signUp, // Panggil fungsi sign up
+                child: Text('Sign Up'),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
               ),
               SizedBox(height: 16),
               Center(
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignUpPage()),
-                    );
+                    Navigator.pop(context); // Kembali ke halaman login
                   },
                   child: Text(
-                    "Don’t have any account? Sign Up",
+                    "Don’t have any account? Log In",
                     style: TextStyle(color: Colors.blue),
                   ),
                 ),
