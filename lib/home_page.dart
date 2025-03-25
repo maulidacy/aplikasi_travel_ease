@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'login_page.dart'; // Pastikan untuk mengimpor LoginPage
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -11,6 +13,12 @@ class HomePage extends StatelessWidget {
             icon: Icon(Icons.notifications),
             onPressed: () {
               // Tambahkan logika untuk notifikasi
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              _logout(context);
             },
           ),
         ],
@@ -79,6 +87,17 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('isLoggedIn');
+
+    // Navigasi kembali ke halaman login setelah logout
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
     );
   }
 

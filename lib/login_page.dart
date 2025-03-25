@@ -5,6 +5,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:developer' as developer;
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -50,6 +52,12 @@ class _LoginPageState extends State<LoginPage> {
       _showDialog('Login Gagal', 'Username atau password salah.');
     }
   }
+
+  // Setelah login berhasil
+void _loginSuccess() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('isLoggedIn', true);
+}
 
   // Fungsi untuk menampilkan dialog
   void _showDialog(String title, String message) {
@@ -118,8 +126,8 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 40),
               _buildTextField(
                 controller: _usernameController,
-                label: 'Email or phone number',
-                prefixIcon: Icons.email,
+                label: 'Username',
+                prefixIcon: Icons.person,
               ),
               SizedBox(height: 16),
               _buildTextField(

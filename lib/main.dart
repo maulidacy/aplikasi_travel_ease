@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:developer' as developer;
-import 'login_page.dart'; // Pastikan untuk mengimpor LoginPage
+import 'login_page.dart'; 
+import 'helpers/database_helper.dart';
+import 'models/user.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,12 +11,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   @override
-
   Widget build(BuildContext context) {
-    /// Builds the MaterialApp widget for the TravelEase application.
-    /// This method sets up the application's main interface, including its
-    /// title, theme, and home screen. The primarySwatch is set to blue, and
-    /// the initial screen displayed is the SplashScreen.
     return MaterialApp(
       title: 'TravelEase',
       theme: ThemeData(
@@ -30,7 +27,6 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     developer.log('SplashScreen: Building the splash screen');
 
-    // Start the timer to navigate to the next screen after a delay
     Timer(Duration(seconds: 3), () {
       developer.log('SplashScreen: Navigating to the login page');
       Navigator.of(context).pushReplacement(
@@ -60,6 +56,53 @@ class SplashScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class UserScreen extends StatefulWidget {
+  @override
+  _UserScreenState createState() => _UserScreenState();
+}
+
+class _UserScreenState extends State<UserScreen> {
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+  List<User> _users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsers();
+  }
+
+  void _loadUsers() async {
+    _users = await _dbHelper.getUsers();
+    setState(() {});
+  }
+
+  void _addUser() async {
+    await _dbHelper.insertUser(User(name: 'John Doe'));
+    _loadUsers();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Users'),
+      ),
+      body: ListView.builder(
+        itemCount: _users.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(_users[index].name),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addUser,
+        child: Icon(Icons.add),
       ),
     );
   }

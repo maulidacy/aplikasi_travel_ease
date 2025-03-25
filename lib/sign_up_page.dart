@@ -24,22 +24,31 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _signUp() async {
+    if (_usernameController.text.isEmpty || 
+        _emailController.text.isEmpty || 
+        _passwordController.text.isEmpty) {
+      _showDialog('Error', 'All fields are required.');
+      return;
+    }
+
     // Simpan data pengguna
-    String hashedPassword = hashPassword(_passwordController.text);
-    await _storage.write(key: 'username', value: _usernameController.text);
-    await _storage.write(key: 'password', value: hashedPassword);
+      String hashedPassword = hashPassword(_passwordController.text);
+      await _storage.write(key: 'username', value: _usernameController.text);
+      await _storage.write(key: 'password', value: hashedPassword);
     developer.log('User registered: ${_usernameController.text}');
 
     // Tampilkan pesan berhasil
     _showDialog('Pendaftaran Berhasil', 'Akun Anda telah berhasil dibuat.');
 
     // Navigasi ke halaman home setelah registrasi
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomePage(),
-      ), // Navigasi ke HomePage
-    );
+    Future.delayed(Duration(seconds: 1), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    });
   }
 
   // Fungsi untuk menampilkan dialog
@@ -166,21 +175,18 @@ class _SignUpPageState extends State<SignUpPage> {
           labelText: label,
           labelStyle: TextStyle(color: Colors.blueGrey),
           prefixIcon: Icon(prefixIcon),
-          suffixIcon:
-              isPassword
-                  ? IconButton(
-                    icon: Icon(
-                      _isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
-                      });
-                    },
-                  )
-                  : null,
+          suffixIcon: isPassword
+              ? IconButton(
+                  icon: Icon(
+                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                )
+              : null,
           filled: true,
           fillColor: Colors.white,
           border: InputBorder.none, // Menghilangkan border
@@ -189,3 +195,4 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 }
+
