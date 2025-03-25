@@ -7,8 +7,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Travel'),
-        actions: [
+        title: Text('Travel Recommender'),
+        backgroundColor: Colors.blueAccent,
+         actions: [
           IconButton(
             icon: Icon(Icons.notifications),
             onPressed: () {
@@ -16,136 +17,190 @@ class HomePage extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: Icon(Icons.account_circle),
             onPressed: () {
-              _logout(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
             },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Search Bar
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search for travel based on budget...',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide(width: 1),
-                  ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Search Bar
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Search for travel based on budget...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey),
                 ),
               ),
-              SizedBox(height: 20),
-
-              // New Place Section
-              Text(
-                'New Place',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              SizedBox(
-                height: 180,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _buildPlaceCard('assets/mountain.jpg', 'Mountain View'),
-                    _buildPlaceCard('assets/beach.jpg', 'Beach Resort'),
-                    _buildPlaceCard('assets/city.jpg', 'City Tour'),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Popular Hotel Section
-              Text(
-                'Popular Hotel',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Column(
+              onTap: () {
+                _showBudgetInputDialog(context);
+              },
+            ),
+            SizedBox(height: 20),
+            Text(
+              'New Place',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            // New Place Section
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.horizontal,
                 children: [
-                  _buildHotelCard('Para Hotel', 'Venice', 'assets/hotel1.jpg'),
-                  SizedBox(height: 10),
-                  _buildHotelCard('Heven Hotel', 'Venice', 'assets/hotel2.jpg'),
+                  _buildDestinationCard('Bali', 'assets/bali.jpg'),
+                  _buildDestinationCard('Venice', 'assets/venice.jpg'),
                 ],
               ),
-              SizedBox(height: 20),
-
-              // Recommended Section
-              Text(
-                'Recommended',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Popular Wisata',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            // Popular Wisata Section
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _buildHotelCard(
+                    'Para Hotel',
+                    'Venice',
+                    'assets/para_hotel.jpg',
+                  ),
+                  _buildHotelCard(
+                    'Heaven Hotel',
+                    'Venice',
+                    'assets/heaven_hotel.jpg',
+                  ),
+                ],
               ),
-              SizedBox(height: 10),
-              // Tambahkan konten rekomendasi di sini
-            ],
-          ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Recommend',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            // Placeholder for recommendations
+            Expanded(
+              child: ListView(
+                children: [
+                  ListTile(
+                    title: Text('Bali'),
+                    subtitle: Text('Recommended based on your preferences'),
+                  ),
+                  ListTile(
+                    title: Text('Venice'),
+                    subtitle: Text('Recommended based on your preferences'),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  void _logout(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('isLoggedIn');
-
-    // Navigasi kembali ke halaman login setelah logout
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
-  }
-
-  Widget _buildPlaceCard(String imagePath, String placeName) {
+  // Function to build destination card
+  Widget _buildDestinationCard(String title, String imagePath) {
     return Container(
-      width: 120,
-      margin: EdgeInsets.only(right: 10),
+      width: 200,
+      margin: EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         image: DecorationImage(image: AssetImage(imagePath), fit: BoxFit.cover),
       ),
       child: Center(
         child: Text(
-          placeName,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          title,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            backgroundColor: Colors.black54,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildHotelCard(String hotelName, String location, String imagePath) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Row(
+  // Function to build hotel card
+  Widget _buildHotelCard(String title, String location, String imagePath) {
+    return Container(
+      width: 200,
+      margin: EdgeInsets.only(right: 16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        image: DecorationImage(image: AssetImage(imagePath), fit: BoxFit.cover),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Image.asset(
-              imagePath,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
+          Text(
+            title,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              backgroundColor: Colors.black54,
             ),
           ),
-          SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                hotelName,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text(location),
-            ],
+          Text(
+            location,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              backgroundColor: Colors.black54,
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  // Function to show budget input dialog
+  void _showBudgetInputDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String budget = '';
+        return AlertDialog(
+          title: Text('Input Your Budget'),
+          content: TextField(
+            decoration: InputDecoration(hintText: 'Enter your budget'),
+            onChanged: (value) {
+              budget = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // Handle budget input
+                Navigator.of(context).pop();
+                // Here you can implement the logic to fetch recommendations based on the budget
+              },
+              child: Text('Submit'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
