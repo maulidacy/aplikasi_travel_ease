@@ -1,3 +1,4 @@
+import 'package:aplikasi_travel_ease/screens/budget_screen.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart'; // Pastikan untuk mengimpor LoginPage
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,7 +10,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Travel Recommender'),
         backgroundColor: Colors.blueAccent,
-         actions: [
+        actions: [
           IconButton(
             icon: Icon(Icons.notifications),
             onPressed: () {
@@ -188,7 +189,11 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 // Handle budget input
                 Navigator.of(context).pop();
-                // Here you can implement the logic to fetch recommendations based on the budget
+                // Navigate to BudgetScreen with the entered budget
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BudgetScreen(budget: int.tryParse(budget) ?? 0)),
+                );
               },
               child: Text('Submit'),
             ),
