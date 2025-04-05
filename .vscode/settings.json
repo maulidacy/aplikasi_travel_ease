@@ -1,3 +1,6 @@
 {
-    "cmake.sourceDirectory": "C:/Project/Flutter Project/aplikasi_travel_ease/linux"
+    "cmake.sourceDirectory": "C:/Project/Flutter Project/aplikasi_travel_ease/linux",
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 500,
+    "dart.flutterHotReloadOnSave": "all"
 }

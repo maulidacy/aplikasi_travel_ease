@@ -1,9 +1,15 @@
 import 'package:aplikasi_travel_ease/screens/budget_screen.dart';
 import 'package:flutter/material.dart';
-import 'login_page.dart'; // Pastikan untuk mengimpor LoginPage
-import 'package:shared_preferences/shared_preferences.dart';
+import 'login_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0; // 0 for Travel, 1 for Tracker
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,10 +39,51 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Toggle Button for Travel and Tracker
+            ToggleButtons(
+              isSelected: [_selectedIndex == 0, _selectedIndex == 1],
+              onPressed: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+
+                // Navigasi ke halaman yang sesuai
+                if (index == 0) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => TravelPage()),
+                  );
+                } else if (index == 1) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ExpenseTrackerPage(),
+                    ),
+                  );
+                }
+              },
+              color: Colors.grey,
+              selectedColor: Colors.black,
+              fillColor: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+              borderColor: Colors.grey,
+              selectedBorderColor: Colors.blueAccent,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text('Travel'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text('Tracker'),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
             // Search Bar
             TextField(
               decoration: InputDecoration(
-                hintText: 'Search for travel based on budget...',
+                hintText: 'Cari destinasi berdasarkan anggaran...',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -49,7 +96,7 @@ class HomePage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'New Place',
+              'Wisata Terbaru',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
@@ -58,7 +105,10 @@ class HomePage extends StatelessWidget {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  _buildDestinationCard('Bali', 'assets/bali.jpg'),
+                  _buildDestinationCard(
+                    'Candi Prambanan',
+                    'assets/prambanan.jpg',
+                  ),
                   _buildDestinationCard('Venice', 'assets/venice.jpg'),
                 ],
               ),
@@ -89,7 +139,7 @@ class HomePage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'Recommend',
+              'Rekomendasi',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             // Placeholder for recommendations
@@ -192,7 +242,11 @@ class HomePage extends StatelessWidget {
                 // Navigate to BudgetScreen with the entered budget
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => BudgetScreen(budget: int.tryParse(budget) ?? 0)),
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            BudgetScreen(budget: int.tryParse(budget) ?? 0),
+                  ),
                 );
               },
               child: Text('Submit'),
@@ -206,6 +260,28 @@ class HomePage extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+// Placeholder for TravelPage
+class TravelPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Travel Page')),
+      body: Center(child: Text('Welcome to Travel Page')),
+    );
+  }
+}
+
+// Placeholder for ExpenseTrackerPage
+class ExpenseTrackerPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Expense Tracker')),
+      body: Center(child: Text('Welcome to Expense Tracker Page')),
     );
   }
 }
