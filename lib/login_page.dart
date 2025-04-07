@@ -146,7 +146,7 @@ void _loginSuccess() async {
                   },
                   child: Text(
                     'Forgot password?',
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(color: const Color.fromARGB(255, 80, 98, 205),),
                   ),
                 ),
               ),
@@ -167,7 +167,7 @@ void _loginSuccess() async {
                   },
                   child: Text(
                     "Don’t have any account? Sign Up",
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(color: const Color.fromARGB(255, 80, 98, 205),),
                   ),
                 ),
               ),
