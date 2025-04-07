@@ -85,7 +85,7 @@ void _loginSuccess() async {
     developer.log('LoginPage: Building the login page');
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Color.fromARGB(255, 230, 234, 245), // Warna latar belakang yang sama dengan sign up page
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Center(
