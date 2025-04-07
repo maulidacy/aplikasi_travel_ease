@@ -77,7 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
     developer.log('SignUpPage: Building the sign-up page');
 
     return Scaffold(
-      backgroundColor: Color(0xFFE5E5E5),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Center(
@@ -89,13 +89,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 alignment: Alignment.center,
                 child: Column(
                   children: [
-                    Icon(Icons.airplane_ticket, size: 64, color: Colors.blue),
+                    Icon(Icons.airplane_ticket, size: 64, color: const Color.fromARGB(255, 80, 98, 205)),
                     SizedBox(height: 8),
                     Text(
                       'TravelEase',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 80, 98, 205),
                       ),
                     ),
                   ],
@@ -136,7 +137,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ElevatedButton(
                 onPressed: _signUp, // Panggil fungsi sign up
                 child: Text('Sign Up'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 80, 98, 205)),
               ),
               SizedBox(height: 16),
               Center(
@@ -146,7 +147,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                   child: Text(
                     "Don’t have any account? Log In",
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(color: const Color.fromARGB(255, 80, 98, 205)),
                   ),
                 ),
               ),

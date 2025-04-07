@@ -18,8 +18,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TravelEase',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        primaryColor: const Color.fromARGB(255, 80, 98, 205), // Ganti dari primarySwatch
+  visualDensity: VisualDensity.adaptivePlatformDensity,
+
       ),
       home: SplashScreen(),
       debugShowCheckedModeBanner: false,
@@ -66,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 59, 91, 117),
+      backgroundColor: const Color.fromARGB(255, 80, 98, 205),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
