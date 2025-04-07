@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:developer' as developer;
 import 'login_page.dart';
+import 'home_page.dart';
 import 'helpers/database_helper.dart';
 import 'models/user.dart';
-import 'recommendation_page.dart'; // Import halaman rekomendasi
-import 'models/destination.dart'; // Import model destinasi
+import 'recommendation_page.dart';
+import 'screens/budget_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,13 +22,24 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: SplashScreen(),
+      debugShowCheckedModeBanner: false,
       routes: {
         '/home': (context) => HomePage(),
+        '/login': (context) => LoginPage(),
         '/recommendations': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map;
+          if (args['userId'] == null || args['budget'] == null) {
+            return Center(child: Text('Invalid arguments provided'));
+          }
           return RecommendationPage(
-            userId: args['userId'],
-            budget: args['budget'],
+            userId: args['userId'].toString(),
+            budget: double.parse(args['budget'].toString()),
+          );
+        },
+        '/budget': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map?;
+          return BudgetScreen(
+            budget: args != null ? args['budget']?.toInt() ?? 0 : 0,
           );
         },
       },
@@ -35,18 +47,24 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    developer.log('SplashScreen: Building the splash screen');
+  _SplashScreenState createState() => _SplashScreenState();
+}
 
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
     Timer(Duration(seconds: 3), () {
-      developer.log('SplashScreen: Navigating to the login page');
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => LoginPage()),
       );
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 59, 91, 117),
       body: Center(
@@ -81,8 +99,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final DatabaseHelper _dbHelper = DatabaseHelper();
-  double _budget = 1000; // Default budget, bisa diubah dengan input user
-  String? _userId; // ID user dari login
+  double _budget = 1000; // Default budget
+  String? _userId; // User ID from login
 
   @override
   void initState() {
@@ -91,12 +109,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _loadUserData() async {
-    // Contoh: Ambil data user dari database
-    // Dalam implementasi nyata, ini bisa dari SharedPreferences atau state management
     List<User> users = await _dbHelper.getUsers();
     if (users.isNotEmpty) {
       setState(() {
-        _userId = users.first.id.toString();
+        _userId = users.first.uid;
       });
     }
   }
@@ -109,12 +125,12 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.person),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => UserScreen()),
-              );
-            },
+              onPressed: () {
+                // Removed reference to undefined UserScreen
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('User profile feature coming soon')),
+                );
+              },
           ),
         ],
       ),
@@ -178,14 +194,20 @@ class _HomePageState extends State<HomePage> {
                         );
                         return;
                       }
-                      Navigator.pushNamed(
-                        context,
-                        '/recommendations',
-                        arguments: {
-                          'userId': _userId!,
-                          'budget': _budget,
-                        },
-                      );
+                      if (_userId != null) {
+                        Navigator.pushNamed(
+                          context,
+                          '/recommendations',
+                          arguments: {
+                            'userId': _userId!,
+                            'budget': _budget.toString(),
+                          },
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('User ID is not available')),
+                        );
+                      }
                     },
                   ),
                   _buildFeatureCard(
@@ -194,7 +216,6 @@ class _HomePageState extends State<HomePage> {
                     'Budget Tracker',
                     Colors.green,
                     () {
-                      // TODO: Implement budget tracker
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Feature coming soon!')),
                       );
@@ -206,7 +227,6 @@ class _HomePageState extends State<HomePage> {
                     'My Trips',
                     Colors.orange,
                     () {
-                      // TODO: Implement my trips
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Feature coming soon!')),
                       );
@@ -218,7 +238,6 @@ class _HomePageState extends State<HomePage> {
                     'Settings',
                     Colors.purple,
                     () {
-                      // TODO: Implement settings
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Feature coming soon!')),
                       );
@@ -266,53 +285,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class UserScreen extends StatefulWidget {
-  @override
-  _UserScreenState createState() => _UserScreenState();
-}
-
-class _UserScreenState extends State<UserScreen> {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-  List<User> _users = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUsers();
-  }
-
-  void _loadUsers() async {
-    _users = await _dbHelper.getUsers();
-    setState(() {});
-  }
-
-  void _addUser() async {
-    await _dbHelper.insertUser(User(name: 'John Doe'));
-    _loadUsers();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Users'),
-      ),
-      body: ListView.builder(
-        itemCount: _users.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(_users[index].name),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addUser,
-        child: Icon(Icons.add),
       ),
     );
   }

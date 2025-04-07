@@ -1,18 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(TravelBudgetApp());
-}
-
-class TravelBudgetApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BudgetScreen(budget: 0), // Pass a default budget for the initial run
-    );
-  }
-}
 
 class BudgetScreen extends StatefulWidget {
   final int budget; // New parameter for budget

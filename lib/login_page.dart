@@ -153,7 +153,7 @@ void _loginSuccess() async {
               ElevatedButton(
                 onPressed: _login, // Panggil fungsi login
                 child: Text('Log In'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 76, 121, 225)),
               ),
               SizedBox(height: 16),
               Center(

@@ -37,4 +37,8 @@ class AuthService {
     await _auth.signOut();
     await _storage.delete(key: 'user');
   }
+
+  Future<User?> getCurrentUser() async {
+    return _auth.currentUser;
+  }
 }

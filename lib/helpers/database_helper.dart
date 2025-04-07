@@ -20,11 +20,29 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'user_database.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)',
+          '''CREATE TABLE users(
+            uid TEXT PRIMARY KEY,
+            email TEXT,
+            name TEXT,
+            photoUrl TEXT
+          )''',
         );
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('DROP TABLE IF EXISTS users');
+          await db.execute(
+            '''CREATE TABLE users(
+              uid TEXT PRIMARY KEY,
+              email TEXT,
+              name TEXT,
+              photoUrl TEXT
+            )''',
+          );
+        }
       },
     );
   }
@@ -44,10 +62,32 @@ class DatabaseHelper {
 
     return List.generate(maps.length, (i) {
       return User(
-        id: maps[i]['id'],
+        uid: maps[i]['uid'],
+        email: maps[i]['email'],
         name: maps[i]['name'],
+        photoUrl: maps[i]['photoUrl'],
       );
     });
+  }
+
+  Future<User?> getUser(String uid) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'users',
+      where: 'uid = ?',
+      whereArgs: [uid],
+      limit: 1,
+    );
+
+    if (maps.isNotEmpty) {
+      return User(
+        uid: maps[0]['uid'],
+        email: maps[0]['email'],
+        name: maps[0]['name'],
+        photoUrl: maps[0]['photoUrl'],
+      );
+    }
+    return null;
   }
 
   Future<void> updateUser(User user) async {
@@ -55,17 +95,17 @@ class DatabaseHelper {
     await db.update(
       'users',
       user.toMap(),
-      where: 'id = ?',
-      whereArgs: [user.id],
+      where: 'uid = ?',
+      whereArgs: [user.uid],
     );
   }
 
-  Future<void> deleteUser(int id) async {
+  Future<void> deleteUser(String uid) async {
     final db = await database;
     await db.delete(
       'users',
-      where: 'id = ?',
-      whereArgs: [id],
+      where: 'uid = ?',
+      whereArgs: [uid],
     );
   }
 }
