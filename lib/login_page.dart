@@ -85,7 +85,7 @@ void _loginSuccess() async {
     developer.log('LoginPage: Building the login page');
 
     return Scaffold(
-      backgroundColor: Color(0xFFE5E5E5),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Center(
@@ -98,13 +98,14 @@ void _loginSuccess() async {
                 alignment: Alignment.center,
                 child: Column(
                   children: [
-                    Icon(Icons.airplane_ticket, size: 64, color: Colors.blue),
+                    Icon(Icons.airplane_ticket, size: 64, color: const Color.fromARGB(255, 80, 98, 205)),
                     SizedBox(height: 8),
                     Text(
                       'TravelEase',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 80, 98, 205),
                       ),
                     ),
                   ],

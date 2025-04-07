@@ -31,16 +31,13 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    // Simpan data pengguna
-      String hashedPassword = hashPassword(_passwordController.text);
-      await _storage.write(key: 'username', value: _usernameController.text);
-      await _storage.write(key: 'password', value: hashedPassword);
+    String hashedPassword = hashPassword(_passwordController.text);
+    await _storage.write(key: 'username', value: _usernameController.text);
+    await _storage.write(key: 'password', value: hashedPassword);
     developer.log('User registered: ${_usernameController.text}');
 
-    // Tampilkan pesan berhasil
     _showDialog('Pendaftaran Berhasil', 'Akun Anda telah berhasil dibuat.');
 
-    // Navigasi ke halaman home setelah registrasi
     Future.delayed(Duration(seconds: 1), () {
       Navigator.pushReplacement(
         context,
@@ -51,7 +48,6 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-  // Fungsi untuk menampilkan dialog
   void _showDialog(String title, String message) {
     showDialog(
       context: context,
@@ -135,7 +131,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               SizedBox(height: 24),
               ElevatedButton(
-                onPressed: _signUp, // Panggil fungsi sign up
+                onPressed: _signUp,
                 child: Text('Sign Up'),
                 style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 80, 98, 205)),
               ),
@@ -143,7 +139,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pop(context); // Kembali ke halaman login
+                    Navigator.pop(context);
                   },
                   child: Text(
                     "Don’t have any account? Log In",
@@ -164,34 +160,37 @@ class _SignUpPageState extends State<SignUpPage> {
     required IconData prefixIcon,
     bool isPassword = false,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30), // Radius sudut
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword && !_isPasswordVisible,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(color: Colors.blueGrey),
-          prefixIcon: Icon(prefixIcon),
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isPasswordVisible = !_isPasswordVisible;
-                    });
-                  },
-                )
-              : null,
-          filled: true,
-          fillColor: Colors.white,
-          border: InputBorder.none, // Menghilangkan border
+    return TextField(
+      controller: controller,
+      obscureText: isPassword && !_isPasswordVisible,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.blueGrey),
+        prefixIcon: Icon(prefixIcon, color: Colors.blueGrey),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.blueGrey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              )
+            : null,
+        filled: true,
+        fillColor: Color.fromARGB(255, 249, 251, 255),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: const Color.fromARGB(255, 255, 255, 255), width: 1),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: const Color.fromARGB(255, 80, 98, 205), width: 1.5),
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       ),
     );
   }
